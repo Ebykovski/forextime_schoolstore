@@ -23,7 +23,7 @@ $(document).ready(function () {
     $(document).on('submit', '#searchForm', function () {
 
         $.getJSON(
-                apiUrl + '/search',
+                apiUrl + '/goods/search',
                 $(this).serialize(),
                 function (response) {
 

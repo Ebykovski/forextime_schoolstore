@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
 /**
  * Goods
  *
  * @author ebykovski
  */
-class Goods
+final class Goods extends BaseModel
 {
+
     /**
      * @var integer
      */
@@ -48,6 +49,31 @@ class Goods
     public function setCategoryId($category_id)
     {
         $this->category_id = $category_id;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \App\Model\Category
+     */
+    public function getCategory()
+    {
+        $mapper = new CategoryMapper($this->db);
+
+        return $mapper->fetchById($this->getCategoryId());
+    }
+
+    /**
+     * Set category
+     *
+     * @param \App\Model\Category $category
+     * @return Goods
+     */
+    public function setCategory(Category $category)
+    {
+        $this->category_id = $category->getId();
 
         return $this;
     }

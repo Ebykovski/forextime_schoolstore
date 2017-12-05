@@ -3,11 +3,11 @@
 namespace App\Model;
 
 /**
- * GoodsMapper
+ * CategoryMapper
  *
  * @author ebykovski
  */
-final class GoodsMapper extends BaseMapper
+final class CategoryMapper extends BaseMapper
 {
 
     /**
@@ -15,13 +15,13 @@ final class GoodsMapper extends BaseMapper
      *
      * @var string
      */
-    protected $tableName = 'goods';
+    protected $tableName = 'categories';
 
     /**
      * Name of model
      *
      * @var string
      */
-    protected $modelName = '\App\Model\Goods';
+    protected $modelName = '\App\Model\Category';
 
 }

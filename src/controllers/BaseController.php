@@ -4,8 +4,9 @@ namespace App\Controller;
 
 use Slim\Container;
 
-class BaseController
+abstract class BaseController
 {
+
     protected $renderer;
     protected $logger;
     protected $flash;
@@ -20,4 +21,5 @@ class BaseController
         $this->db = $c->get('db');
         $this->settings = $c->get('settings');
     }
+
 }
