@@ -34,8 +34,7 @@ final class GoodsMapper extends BaseMapper
     {
 
         $sQuery = 'SELECT
-                    g.*,
-                    r.score
+                    g.*
                 FROM
                     (SELECT
                         goods_id,
@@ -44,10 +43,14 @@ final class GoodsMapper extends BaseMapper
                         goods_options
                     WHERE
                         MATCH (option_value) AGAINST(:query_string IN BOOLEAN MODE)
+
+                        -- 2.1.1 Fields to search: all the fields except year(3) of book(1)
+                        AND (goods_id NOT IN (SELECT id FROM goods WHERE category_id = 1) AND option_id <> 3)
+
                         '.(!$iCategoryId ? '' : ' AND goods_id IN (SELECT id FROM goods WHERE category_id = :category_id)').'
                     GROUP BY
                         goods_id
-                    ORDER BY score) AS r
+                    ORDER BY score DESC) AS r
                 LEFT JOIN
                     goods g
                 ON
