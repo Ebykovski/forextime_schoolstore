@@ -45,7 +45,7 @@ final class GoodsMapper extends BaseMapper
                         MATCH (option_value) AGAINST(:query_string IN BOOLEAN MODE)
 
                         -- 2.1.1 Fields to search: all the fields except year(3) of book(1)
-                        AND (goods_id NOT IN (SELECT id FROM goods WHERE category_id = 1) AND option_id <> 3)
+                        -- AND (goods_id NOT IN (SELECT id FROM goods WHERE category_id = 1) AND option_id <> 3)
 
                         '.(!$iCategoryId ? '' : ' AND goods_id IN (SELECT id FROM goods WHERE category_id = :category_id)').'
                     GROUP BY
@@ -64,7 +64,7 @@ final class GoodsMapper extends BaseMapper
         $stmt = $this->db->prepare($sQuery);
 
         // need for boolean mode
-        $sQueryString = '+'.preg_replace('/\s+/', '* +', $sQueryString).'*';
+        $sQueryString = preg_replace('/\s+/', '* ', $sQueryString).'*';
 
         $stmt->bindValue(':query_string', $sQueryString, \PDO::PARAM_STR);
 

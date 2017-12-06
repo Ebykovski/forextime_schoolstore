@@ -4,23 +4,35 @@
         <meta charset="utf-8"/>
         <title></title>
         <link href='//fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/style.css?<?= rand() ?>">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-        <script src="/js/app.js"></script>
+        <script src="/js/app.js?<?= rand() ?>"></script>
     </head>
     <body>
-        <h1>Slim</h1>
-        <div>a microframework for PHP</div>
+        <h1>FXTM</h1>
+        <div>school store</div>
 
-        <form id="searchForm">
-            <input type="text" id="query" name="q">
-            <select name="category" id="category">
-                <option value="">In all Categories</option>
-                <option value="1">Books</option>
-                <option value="2">Pens</option>
-                <option value="3">Notebooks</option>
-            </select>
-            <button type="submit">Искать</button>
-        </form>
+        <div class="wrapper">
+            <form id="searchForm">
+                <input type="text" id="query" name="q">
+                <select name="category" id="category">
+                    <option value="">In all Categories</option>
+                    
+                    <?php foreach ($categories as $item) : ?>
+                        <option value="<?= $item->getId() ?>"><?= $item->getName() ?></option>
+                    <?php endforeach; ?>
+
+                </select>
+                <button type="submit">Искать</button>
+            </form>
+
+            <div id="listItems">
+            </div>
+
+            <div id="editFormWrap">
+
+            </div>
+        </div>
+
     </body>
 </html>
