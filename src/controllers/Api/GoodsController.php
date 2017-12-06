@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use App\Model\GoodsMapper;
+use App\Model\Goods;
 
 /**
  * Api GoodsController
@@ -17,24 +18,21 @@ final class GoodsController extends \App\Controller\BaseController
     public function listItems(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
-        $iPage    = key_exists('page', $args) ? (int) $args['page'] : 1;
+        $iPage = key_exists('page', $args) ? (int) $args['page'] : 1;
 
         $oGoodsMapper = new GoodsMapper($this->db);
 
         $aGoods = $oGoodsMapper
-            ->setLimit($iPerPage)
-            ->setPage($iPage)
-            ->fetchAll();
+                ->setLimit($iPerPage)
+                ->setPage($iPage)
+                ->fetchAll();
 
-        $this->renderer->render($response,
-                                [
-            'data'     => $aGoods,
-            'page'     => $iPage,
-            'per_page' => $iPerPage,
-            'total'    => $oGoodsMapper->foundRows()
-            ], 200);
-
-        return $response;
+        return $this->renderer->render($response, [
+                    'data' => $aGoods,
+                    'page' => $iPage,
+                    'per_page' => $iPerPage,
+                    'total' => $oGoodsMapper->foundRows()
+                        ], 200);
     }
 
     public function getItem(Request $request, Response $response, $args)
@@ -49,34 +47,59 @@ final class GoodsController extends \App\Controller\BaseController
             foreach ($item->getOptions() as $option) {
 
                 $aOptions[] = [
-                    'id'    => $option->getId(),
-                    'name'  => $option->getName(),
+                    'id' => $option->getId(),
+                    'name' => $option->getName(),
                     'value' => $option->getValue()
                 ];
             }
 
             $aData = [
-                'id'       => $item->getId(),
+                'id' => $item->getId(),
                 'category' => [
-                    'id'   => $item->getCategory()->getId(),
+                    'id' => $item->getCategory()->getId(),
                     'name' => $item->getCategory()->getName()
                 ],
-                'options'  => $aOptions
+                'options' => $aOptions
             ];
         }
 
-        $this->renderer->render($response, [
-            'data' => $aData
-            ], ($aData ? 200 : 404)
+        return $this->renderer->render($response, [
+                    'data' => $aData
+                        ], ($aData ? 200 : 404)
         );
+    }
 
-        return $response;
+    public function saveItem(Request $request, Response $response, $args)
+    {
+        $item = (new GoodsMapper($this->db))->fetchById((int) $args['id']);
+
+        $aOptionValues = $request->getParam('option');
+        $iCategoryId = $request->getParam('category_id');
+
+
+        //(new GoodsMapper($this->db))->save($item);
+
+        return $this->renderer->render($response, [
+                    'data' => $item
+                        ], 200
+        );
+    }
+
+    public function addItem(Request $request, Response $response, $args)
+    {
+        $item = new Goods($this->db);
+        (new GoodsMapper($this->db))->save($item);
+
+        return $this->renderer->render($response, [
+                    'data' => 1
+                        ], 500
+        );
     }
 
     public function search(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
-        $iPage    = key_exists('page', $args) ? (int) $args['page'] : 1;
+        $iPage = key_exists('page', $args) ? (int) $args['page'] : 1;
 
         $sQueryString = $request->getParam('q');
         $iCategoryId = $request->getParam('category', false);
@@ -84,9 +107,9 @@ final class GoodsController extends \App\Controller\BaseController
         $oGoodsMapper = new GoodsMapper($this->db);
 
         $aGoods = $oGoodsMapper
-            ->setLimit($iPerPage)
-            ->setPage($iPage)
-            ->search($sQueryString, $iCategoryId);
+                ->setLimit($iPerPage)
+                ->setPage($iPage)
+                ->search($sQueryString, $iCategoryId);
 
         $aData = [];
 
@@ -102,8 +125,8 @@ final class GoodsController extends \App\Controller\BaseController
                         // name, authors, isbn
                         if (in_array($option->getId(), [1, 2, 4])) {
                             $aOptions[] = [
-                                'id'    => $option->getId(),
-                                'name'  => $option->getName(),
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
                                 'value' => $option->getValue()
                             ];
                         }
@@ -113,8 +136,8 @@ final class GoodsController extends \App\Controller\BaseController
                         // manufacturer, color
                         if (in_array($option->getId(), [5, 7])) {
                             $aOptions[] = [
-                                'id'    => $option->getId(),
-                                'name'  => $option->getName(),
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
                                 'value' => $option->getValue()
                             ];
                         }
@@ -124,8 +147,8 @@ final class GoodsController extends \App\Controller\BaseController
                         // manufacturer, cover
                         if (in_array($option->getId(), [5, 8])) {
                             $aOptions[] = [
-                                'id'    => $option->getId(),
-                                'name'  => $option->getName(),
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
                                 'value' => $option->getValue()
                             ];
                         }
@@ -136,23 +159,21 @@ final class GoodsController extends \App\Controller\BaseController
             }
 
             $aData[] = [
-                'id'       => $item->getId(),
+                'id' => $item->getId(),
                 'category' => [
-                    'id'   => $item->getCategory()->getId(),
+                    'id' => $item->getCategory()->getId(),
                     'name' => $item->getCategory()->getName()
                 ],
-                'options'  => $aOptions
+                'options' => $aOptions
             ];
         }
 
-        $this->renderer->render($response, [
-            'data'     => $aData,
-            'page'     => $iPage,
-            'per_page' => $iPerPage,
-            'total'    => $oGoodsMapper->foundRows()
-            ], 200);
-
-        return $response;
+        return $this->renderer->render($response, [
+                    'data' => $aData,
+                    'page' => $iPage,
+                    'per_page' => $iPerPage,
+                    'total' => $oGoodsMapper->foundRows()
+                        ], 200);
     }
 
 }

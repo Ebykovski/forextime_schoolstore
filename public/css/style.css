@@ -26,8 +26,12 @@ h1 {
     margin: 30px 0;
 }
 
-#listItems {
-    
+.item {
+    cursor: pointer;
+}
+
+.item:hover {
+    background-color: #ccffff;
 }
 
 .odd, .even {
@@ -37,4 +41,18 @@ h1 {
 
 .even {
     background-color: #f5f5f5;
+}
+
+#editFormWrap {
+    width: 600px;
+    margin: 0 auto;
+    border: 1px solid #aaa;
+    background-color: #eee;
+    padding: 0 10px 20px 10px;
+    margin-bottom: 30px;
+}
+
+#editFormWrap label {
+    display: block;
+    margin-top: 10px;
 }

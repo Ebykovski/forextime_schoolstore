@@ -21,6 +21,16 @@ final class Goods extends BaseModel
     private $category_id;
 
     /**
+     * @var array \App\Model\Option
+     */
+    private $options = [];
+
+    /**
+     * @var \App\Model\Category
+     */
+    private $category;
+
+    /**
      * Get Id
      *
      * @return integer
@@ -60,9 +70,12 @@ final class Goods extends BaseModel
      */
     public function getCategory()
     {
-        $mapper = new CategoryMapper($this->db);
+        if (!$this->category) {
+            $mapper = new CategoryMapper($this->db);
+            $this->category = $mapper->fetchById($this->getCategoryId());
+        }
 
-        return $mapper->fetchById($this->getCategoryId());
+        return $this->category;
     }
 
     /**
@@ -73,6 +86,7 @@ final class Goods extends BaseModel
      */
     public function setCategory(Category $category)
     {
+        $this->category = $category;
         $this->category_id = $category->getId();
 
         return $this;
@@ -85,7 +99,24 @@ final class Goods extends BaseModel
      */
     public function getOptions()
     {
-        return (new OptionMapper($this->db))->getGoodsOptions($this);
+        if (count($this->options) == 0) {
+            $this->options = (new OptionMapper($this->db))->getGoodsOptions($this);
+        }
+
+        return $this->options;
+    }
+
+    /**
+     * Get list options for goods
+     *
+     * @param array $options
+     * @return Goods
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+
+        return $this;
     }
 
 }

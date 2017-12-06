@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use App\Model\CategoryMapper;
+use App\Model\OptionMapper;
 
 /**
  * Api CategoriesController
@@ -18,43 +19,43 @@ final class CategoriesController extends \App\Controller\BaseController
     {
         $aItems = (new CategoryMapper($this->db))->fetchAll();
 
-        $this->renderer->render($response, [
-            'data' => $aItems
-            ], 200);
-
-        return $response;
+        return $this->renderer->render($response, [
+                    'data' => $aItems
+                        ], 200);
     }
 
     public function getItem(Request $request, Response $response, $args)
     {
         $aCategory = (new CategoryMapper($this->db))->fetchById((int) $args['id']);
 
-        $this->renderer->render($response, [
-            'data' => $aCategory
-            ], ($aCategory ? 200 : 404)
+        return $this->renderer->render($response, [
+                    'data' => $aCategory
+                        ], ($aCategory ? 200 : 404)
         );
-
-        return $response;
     }
 
     public function getOptions(Request $request, Response $response, $args)
     {
-        $iPerPage = 25;
-        $iPage    = key_exists('page', $args) ? (int) $args['page'] : 1;
+        $category = (new CategoryMapper($this->db))->fetchById((int) $args['id']);
 
-        $oGoodsMapper = new GoodsMapper($this->db);
+        $aData = [];
 
-        $aGoods = $oGoodsMapper
-            ->setLimit($iPerPage)
-            ->setPage($iPage)
-            ->fetchAll();
+        if ($category) {
+            $aOptions = (new OptionMapper($this->db))->getCategoryOptions($category);
 
-        $this->renderer->render($response, [
-            'data'   => $aGoods,
-            'status' => 200
-            ], 200);
+            foreach ($aOptions as $item) {
+                $aData[] = [
+                    'id' => $item->getId(),
+                    'name' => $item->getName(),
+                    'value' => $item->getValue()
+                ];
+            }
+        }
 
-        return $response;
+        return $this->renderer->render($response, [
+                    'data' => $aData
+                        ], 200
+        );
     }
 
 }

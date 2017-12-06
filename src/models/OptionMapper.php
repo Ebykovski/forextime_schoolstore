@@ -9,6 +9,7 @@ namespace App\Model;
  */
 final class OptionMapper extends BaseMapper
 {
+
     /**
      * Name of table
      *
@@ -32,30 +33,30 @@ final class OptionMapper extends BaseMapper
     public function getGoodsOptions(Goods $goods)
     {
         $sQuery = 'SELECT
-                o.id,
-                o.name,
-                go.option_value
-            FROM
-                options o
-            LEFT JOIN
-                (SELECT
-                    option_id,
-                    option_value
-                FROM
-                    goods_options
-                WHERE
-                    goods_id = :goods_id
-                ) AS go
-            ON
-                o.id = go.option_id
-            WHERE
-                o.id IN (SELECT
-                            option_id
+                        o.id,
+                        o.name,
+                        go.option_value
+                    FROM
+                        options o
+                    LEFT JOIN
+                        (SELECT
+                            option_id,
+                            option_value
                         FROM
-                            categories_options
+                            goods_options
                         WHERE
-                            category_id = :category_id
-                        )
+                            goods_id = :goods_id
+                        ) AS go
+                    ON
+                        o.id = go.option_id
+                    WHERE
+                        o.id IN (SELECT
+                                    option_id
+                                FROM
+                                    categories_options
+                                WHERE
+                                    category_id = :category_id
+                                )
         ';
 
         $stmt = $this->db->prepare($sQuery);
@@ -77,17 +78,17 @@ final class OptionMapper extends BaseMapper
     public function getCategoryOptions(Category $category)
     {
         $sQuery = 'SELECT
-                o.id,
-                o.name,
-                co.option_value
-            FROM
-                categories_options co
-            LEFT JOIN
-                options o
-            ON
-                co.option_id = o.id
-            WHERE
-                co.category_id = :id';
+                        o.id,
+                        o.name,
+                        co.option_value
+                    FROM
+                        categories_options co
+                    LEFT JOIN
+                        options o
+                    ON
+                        co.option_id = o.id
+                    WHERE
+                        co.category_id = :id';
 
         $stmt = $this->db->prepare($sQuery);
 
@@ -97,4 +98,5 @@ final class OptionMapper extends BaseMapper
 
         return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->modelName, [$this->db]);
     }
+
 }

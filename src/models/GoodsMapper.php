@@ -9,6 +9,7 @@ namespace App\Model;
  */
 final class GoodsMapper extends BaseMapper
 {
+
     /**
      * Name of table
      *
@@ -47,7 +48,7 @@ final class GoodsMapper extends BaseMapper
                         -- 2.1.1 Fields to search: all the fields except year(3) of book(1)
                         -- AND (goods_id NOT IN (SELECT id FROM goods WHERE category_id = 1) AND option_id <> 3)
 
-                        '.(!$iCategoryId ? '' : ' AND goods_id IN (SELECT id FROM goods WHERE category_id = :category_id)').'
+                        ' . (!$iCategoryId ? '' : ' AND goods_id IN (SELECT id FROM goods WHERE category_id = :category_id)') . '
                     GROUP BY
                         goods_id
                     ORDER BY score DESC) AS r
@@ -58,13 +59,13 @@ final class GoodsMapper extends BaseMapper
         ';
 
         if ($this->getPage() > 0) {
-            $sQuery .= ' LIMIT '.$this->getLimit().' OFFSET '.(($this->getPage() - 1) * $this->getLimit());
+            $sQuery .= ' LIMIT ' . $this->getLimit() . ' OFFSET ' . (($this->getPage() - 1) * $this->getLimit());
         }
 
         $stmt = $this->db->prepare($sQuery);
 
         // need for boolean mode
-        $sQueryString = preg_replace('/\s+/', '* ', $sQueryString).'*';
+        $sQueryString = preg_replace('/\s+/', '* ', $sQueryString) . '*';
 
         $stmt->bindValue(':query_string', $sQueryString, \PDO::PARAM_STR);
 
@@ -75,6 +76,45 @@ final class GoodsMapper extends BaseMapper
         $stmt->execute();
 
         return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->modelName, [$this->db]);
+    }
+
+    /**
+     * Save goods
+     *
+     * @param \App\Model\Goods $goods
+     * @return GoodsMapper
+     */
+    public function save(Goods $goods)
+    {
+        if ($goods->getId() > 0) {
+            $this->update($goods);
+        } else {
+            $this->insert($goods);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Insert new goods
+     *
+     * @param \App\Model\Goods $goods
+     * @return GoodsMapper
+     */
+    private function insert(Goods $goods)
+    {
+
+    }
+
+    /**
+     * Update existing goods
+     *
+     * @param \App\Model\Goods $goods
+     * @return GoodsMapper
+     */
+    private function update(Goods $goods)
+    {
+
     }
 
 }
