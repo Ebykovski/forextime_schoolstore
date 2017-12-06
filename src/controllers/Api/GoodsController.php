@@ -17,19 +17,58 @@ final class GoodsController extends \App\Controller\BaseController
     public function listItems(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
-        $iPage = key_exists('page', $args) ? (int) $args['page'] : 1;
+        $iPage    = key_exists('page', $args) ? (int) $args['page'] : 1;
 
         $oGoodsMapper = new GoodsMapper($this->db);
 
         $aGoods = $oGoodsMapper
-                ->setLimit($iPerPage)
-                ->setPage($iPage)
-                ->fetchAll();
+            ->setLimit($iPerPage)
+            ->setPage($iPage)
+            ->fetchAll();
+
+        $this->renderer->render($response,
+                                [
+            'data'     => $aGoods,
+            'page'     => $iPage,
+            'per_page' => $iPerPage,
+            'total'    => $oGoodsMapper->foundRows()
+            ], 200);
+
+        return $response;
+    }
+
+    public function getItem(Request $request, Response $response, $args)
+    {
+        $item = (new GoodsMapper($this->db))->fetchById((int) $args['id']);
+
+        $aData = false;
+
+        if ($item) {
+            $aOptions = [];
+
+            foreach ($item->getOptions() as $option) {
+
+                $aOptions[] = [
+                    'id'    => $option->getId(),
+                    'name'  => $option->getName(),
+                    'value' => $option->getValue()
+                ];
+            }
+
+            $aData = [
+                'id'       => $item->getId(),
+                'category' => [
+                    'id'   => $item->getCategory()->getId(),
+                    'name' => $item->getCategory()->getName()
+                ],
+                'options'  => $aOptions
+            ];
+        }
 
         $this->renderer->render($response, [
-            'data' => $aGoods,
-            'status' => 200
-                ], 200);
+            'data' => $aData
+            ], ($aData ? 200 : 404)
+        );
 
         return $response;
     }
@@ -37,19 +76,81 @@ final class GoodsController extends \App\Controller\BaseController
     public function search(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
-        $iPage = key_exists('page', $args) ? (int) $args['page'] : 1;
+        $iPage    = key_exists('page', $args) ? (int) $args['page'] : 1;
+
+        $sQueryString = $request->getParam('q');
+        $iCategoryId = $request->getParam('category', false);
 
         $oGoodsMapper = new GoodsMapper($this->db);
 
         $aGoods = $oGoodsMapper
-                ->setLimit($iPerPage)
-                ->setPage($iPage)
-                ->fetchAll();
+            ->setLimit($iPerPage)
+            ->setPage($iPage)
+            ->search($sQueryString, $iCategoryId);
+
+        $aData = [];
+
+        foreach ($aGoods as $item) {
+
+            $aOptions = [];
+
+            foreach ($item->getOptions() as $option) {
+
+                switch ($item->getCategoryId()) {
+                    // 1 - Books
+                    case 1:
+                        // name, authors, isbn
+                        if (in_array($option->getId(), [1, 2, 4])) {
+                            $aOptions[] = [
+                                'id'    => $option->getId(),
+                                'name'  => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    // 2 - Pens
+                    case 2:
+                        // manufacturer, color
+                        if (in_array($option->getId(), [5, 7])) {
+                            $aOptions[] = [
+                                'id'    => $option->getId(),
+                                'name'  => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    // 3 - Notebooks
+                    case 3:
+                        // manufacturer, cover
+                        if (in_array($option->getId(), [5, 8])) {
+                            $aOptions[] = [
+                                'id'    => $option->getId(),
+                                'name'  => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            $aData[] = [
+                'id'       => $item->getId(),
+                'category' => [
+                    'id'   => $item->getCategory()->getId(),
+                    'name' => $item->getCategory()->getName()
+                ],
+                'options'  => $aOptions
+            ];
+        }
 
         $this->renderer->render($response, [
-            'data' => $aGoods,
-            'status' => 200
-                ], 200);
+            'data'     => $aData,
+            'page'     => $iPage,
+            'per_page' => $iPerPage,
+            'total'    => $oGoodsMapper->foundRows()
+            ], 200);
 
         return $response;
     }

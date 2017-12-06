@@ -46,7 +46,7 @@ final class Goods extends BaseModel
      * @param integer $category_id
      * @return Goods
      */
-    public function setCategoryId($category_id)
+    public function setCategoryId(integer $category_id)
     {
         $this->category_id = $category_id;
 
@@ -76,6 +76,16 @@ final class Goods extends BaseModel
         $this->category_id = $category->getId();
 
         return $this;
+    }
+
+    /**
+     * Get list options for goods
+     *
+     * @return array \App\Model\Option
+     */
+    public function getOptions()
+    {
+        return (new OptionMapper($this->db))->getGoodsOptions($this);
     }
 
 }

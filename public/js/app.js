@@ -1,41 +1,42 @@
-var apiUrl = '/api/v1';
-var authToken = null;
+(function () {
+    var apiUrl = '/api/v1';
+    var apiKey = '1111-2222-3333-4444';
 
-
-$(document).ready(function () {
-
-
-    $.getJSON(apiUrl + '/', function (response) {
-
-        if (response.status == 200) {
-            var data = response.data;
-
-            authToken = data.token;
-
-            $.ajaxSetup({
-                headers: {
-                    'X-Auth-Token': authToken
-                }
-            });
-        }
-    });
-
-    $(document).on('submit', '#searchForm', function () {
+    $(document).ready(function () {
 
         $.getJSON(
-                apiUrl + '/goods/search',
-                $(this).serialize(),
-                function (response) {
+                apiUrl + '/',
+                {
+                    apiKey: apiKey
+                },
+                function (response, statusText, jqXHR) {
 
-                    if (response.status == 200) {
-                        var data = response.data;
+                    if (jqXHR.status == 200) {
 
-                        console.log(data);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-Auth-Token': response.token
+                            }
+                        });
                     }
                 });
 
-        return false;
-    })
-})
+        $(document).on('submit', '#searchForm', function () {
+
+            $.getJSON(
+                    apiUrl + '/goods/search',
+                    $(this).serialize(),
+                    function (response, statusText, jqXHR) {
+
+                        if (jqXHR.status == 200) {
+
+                            console.log(response);
+                        }
+                    });
+
+            return false;
+        })
+    });
+})();
 
 

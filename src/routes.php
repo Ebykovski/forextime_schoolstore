@@ -9,9 +9,16 @@ $app->group('/api/v1', function () use ($app) {
     $app->get('[/]', 'App\Controller\Api\IndexController:index');
 
     $app->group('/goods', function () use ($app) {
-        $app->get('/search[/[page/{page:\d+}]]', 'App\Controller\Api\GoodsController:search');
+        $app->any('/search[/[page/{page:\d+}]]', 'App\Controller\Api\GoodsController:search');
         $app->get('[/[page/{page:\d+}]]', 'App\Controller\Api\GoodsController:listItems');
-        $app->get('/{id:\d+}', 'App\Controller\Api\ItemsController:getItem');
-        $app->post('/{id:\d+}', 'App\Controller\Api\ItemsController:saveItem');
+        $app->get('/{id:\d+}', 'App\Controller\Api\GoodsController:getItem');
+        $app->post('/{id:\d+}', 'App\Controller\Api\GoodsController:saveItem');
     });
+
+    $app->group('/categories', function () use ($app) {
+        $app->get('[/]', 'App\Controller\Api\CategoriesController:listItems');
+        $app->get('/{id:\d+}', 'App\Controller\Api\CategoriesController:getItem');
+        $app->get('/{id:\d+}/options', 'App\Controller\Api\CategoriesController:getOptions');
+    });
+
 });

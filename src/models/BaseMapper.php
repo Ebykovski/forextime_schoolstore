@@ -91,7 +91,7 @@ abstract class BaseMapper
      */
     public function fetchAll()
     {
-        $sQuery = 'SELECT * FROM ' . $this->tableName;
+        $sQuery = 'SELECT SQL_CALC_FOUND_ROWS * FROM ' . $this->tableName;
 
         if ($this->getPage() > 0) {
             $sQuery .= ' LIMIT ' . $this->getLimit() . ' OFFSET ' . (($this->getPage() - 1) * $this->getLimit());
@@ -100,7 +100,7 @@ abstract class BaseMapper
         $stmt = $this->db->prepare($sQuery);
         $stmt->execute();
 
-        return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->modelName, $this->db);
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, $this->modelName, [$this->db]);
     }
 
     /**
@@ -119,7 +119,20 @@ abstract class BaseMapper
             'id' => (int) $id
         ]);
 
-        return $stmt->fetchObject($this->modelName, $this->db);
+        return $stmt->fetchObject($this->modelName, [$this->db]);
+    }
+
+    /**
+     * Get count total founded rows in last select
+     *
+     * @return integer
+     */
+    public function foundRows()
+    {
+        $stmt = $this->db->prepare('SELECT FOUND_ROWS()');
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
     }
 
 }
