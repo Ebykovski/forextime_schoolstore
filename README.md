@@ -1,10 +1,19 @@
 # forextime_schoolstore
 
-for install
+### for install
 
-vagrant up
-vagrant ssh
-cd /vagrant
+clone project
+
+on your mysql server create database for project
+
+import file project_dir/sql/*.sql
+
+change connection settings in project_dir/src/settings.php
+
+cd project_dir
+
 composer install
 
-in host os go to http://localhost:8888
+composer start
+
+go to http://localhost:8080
