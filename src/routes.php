@@ -13,6 +13,7 @@ $app->group('/api/v1', function () use ($app) {
         $app->post('[/]', 'App\Controller\Api\GoodsController:addItem');
         $app->get('/{id:\d+}', 'App\Controller\Api\GoodsController:getItem');
         $app->post('/{id:\d+}', 'App\Controller\Api\GoodsController:saveItem');
+        $app->delete('/{id:\d+}', 'App\Controller\Api\GoodsController:deleteItem');
         $app->any('/search[/[page/{page:\d+}]]', 'App\Controller\Api\GoodsController:search');
     });
 

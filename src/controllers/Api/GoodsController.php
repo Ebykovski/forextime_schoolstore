@@ -248,6 +248,23 @@ final class GoodsController extends AbstractController
     }
 
     /**
+     * Delete Goods by id
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function deleteItem(Request $request, Response $response, $args)
+    {
+
+        return $this->jsonRenderer->render($response, [
+                    'error' => 'Not implemented'
+                        ], 501
+        );
+    }
+
+    /**
      * Search Goods
      *
      * @param Request $request
