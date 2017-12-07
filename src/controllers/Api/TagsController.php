@@ -8,13 +8,21 @@ use App\Controller\AbstractController;
 use App\Model\TagsMapper;
 
 /**
- * Api CategoriesController
+ * Api TagsController
  *
  * @author ebykovski
  */
 final class TagsController extends AbstractController
 {
 
+    /**
+     * Top 50 Tags
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function listItems(Request $request, Response $response, $args)
     {
         $aItems = (new TagsMapper($this->db))->fetchTop();

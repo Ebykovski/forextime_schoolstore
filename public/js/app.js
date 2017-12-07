@@ -74,29 +74,33 @@
 
             $('#query').val($(this).data('name'));
             $('#searchForm').submit();
-            
+
             return false;
         });
 
         $(document).on('click', '#categories a', function () {
 
             alert('Not implemented');
-            
+
             return false;
         });
 
         // get and fill goods list
-        $.getJSON(
-                apiUrl + '/goods',
-                function (response, statusText, jqXHR) {
-                    if (jqXHR.status == 200) {
-                        if (response.total > 0) {
-                            fillTable(response.data);
-                        } else {
-                            $('#listItems').empty().text('0 items found');
+        function getGoods() {
+            $.getJSON(
+                    apiUrl + '/goods',
+                    function (response, statusText, jqXHR) {
+                        if (jqXHR.status == 200) {
+                            if (response.total > 0) {
+                                fillTable(response.data);
+                            } else {
+                                $('#listItems').empty().text('0 items found');
+                            }
                         }
-                    }
-                });
+                    });
+        }
+        
+        getGoods();
 
         // on submit search form
         $(document).on('submit', '#searchForm', function () {
@@ -196,7 +200,8 @@
                                             'type': 'text',
                                             'name': 'option[' + item.id + ']',
                                             'required': 'required',
-                                            'id': 'option-' + item.id
+                                            'id': 'option-' + item.id,
+                                            'maxlength': 255
                                         }).val(item.value)));
                             }
 
@@ -217,16 +222,13 @@
                 data: data,
                 dataType: "json"
             }).done(function (data, textStatus, jqXHR) {
-                console.log('done');
-                console.log(data);
-                console.log(textStatus);
-                console.log(jqXHR.status);
+                alert('Save Succes');
+                getGoods();
+                $('#editFormWrap').slideUp();
             }).fail(function (data, textStatus, jqXHR) {
-                console.log('fail');
-                console.log(data);
-                console.log(textStatus);
-                console.log(jqXHR.status);
-
+                if (data.error) {
+                    alert(data.error);
+                }
             });
 
             return false;

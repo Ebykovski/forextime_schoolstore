@@ -9,13 +9,21 @@ use App\Model\CategoryMapper;
 final class IndexController extends AbstractController
 {
 
+    /**
+     * Index page of site
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function index(Request $request, Response $response, $args)
     {
 
         $aCategories = (new CategoryMapper($this->db))->fetchAll();
 
         return $this->renderer->render($response, 'index.phtml', [
-            'categories' => $aCategories
+                'categories' => $aCategories
         ]);
     }
 

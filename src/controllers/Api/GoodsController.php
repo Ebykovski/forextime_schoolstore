@@ -7,6 +7,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use App\Controller\AbstractController;
 use App\Model\GoodsMapper;
 use App\Model\Goods;
+use App\Model\CategoryMapper;
+use App\Model\OptionMapper;
 
 /**
  * Api GoodsController
@@ -16,6 +18,14 @@ use App\Model\Goods;
 final class GoodsController extends AbstractController
 {
 
+    /**
+     * Paginated list of all Goods
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function listItems(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
@@ -93,6 +103,14 @@ final class GoodsController extends AbstractController
                         ], 200);
     }
 
+    /**
+     * Single Goods by id
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function getItem(Request $request, Response $response, $args)
     {
         $item = (new GoodsMapper($this->db))->fetchById((int) $args['id']);
@@ -127,33 +145,116 @@ final class GoodsController extends AbstractController
         );
     }
 
+    /**
+     * Save existing Goods
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function saveItem(Request $request, Response $response, $args)
     {
-        $item = (new GoodsMapper($this->db))->fetchById((int) $args['id']);
 
-        $aOptionValues = $request->getParam('option');
-        $iCategoryId = $request->getParam('category_id');
+        $error = false;
 
+        try{
+            $oGoodsMapper = new GoodsMapper($this->db);
+            $item = $oGoodsMapper->fetchById((int) $args['id']);
 
-        //(new GoodsMapper($this->db))->save($item);
+            if(!$item){
+                throw new \Exception('Goods not found');
+            }
+
+            $aOptionValues = $request->getParam('option');
+            $iCategoryId = $request->getParam('category_id');
+
+            $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
+
+            if(!$oCategory){
+                throw new Exception('Category not found');
+            }
+
+            $aCategoryOptions = (new OptionMapper($this->db))->getCategoryOptions($oCategory);
+
+            foreach ($aCategoryOptions as &$option) {
+                $option->setValue($aOptionValues[$option->getId()]);
+
+                //@TODO add option value validation
+            }
+
+            $item->setCategory($oCategory);
+            $item->setOptions($aCategoryOptions);
+
+            $oGoodsMapper->save($item);
+
+        } catch (\Exception $e){
+            $error = $e->getMessage();
+        }
 
         return $this->jsonRenderer->render($response, [
-                    'data' => $item
-                        ], 200
+                    'data' => 1,
+                    'error' => $error
+                        ], ($error ? 500 : 200)
         );
     }
 
+    /**
+     * Create new Goods
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function addItem(Request $request, Response $response, $args)
     {
-        $item = new Goods($this->db);
-        (new GoodsMapper($this->db))->save($item);
+        $error = false;
+
+        try{
+            $aOptionValues = $request->getParam('option');
+            $iCategoryId = $request->getParam('category_id');
+
+            $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
+
+            if(!$oCategory){
+                throw new Exception('Category not found');
+            }
+
+            $aCategoryOptions = (new OptionMapper($this->db))->getCategoryOptions($oCategory);
+
+            foreach ($aCategoryOptions as &$option) {
+                $option->setValue($aOptionValues[$option->getId()]);
+
+                //@TODO add option value validation
+            }
+
+            $item = new Goods($this->db);
+
+            $item->setCategory($oCategory);
+            $item->setOptions($aCategoryOptions);
+
+            (new GoodsMapper($this->db))->save($item);
+
+        } catch (\Exception $e){
+            $error = $e->getMessage();
+        }
 
         return $this->jsonRenderer->render($response, [
-                    'data' => 1
-                        ], 500
+                    'data' => 1,
+                    'error' => $error
+                        ], ($error ? 500 : 200)
         );
     }
 
+    /**
+     * Search Goods
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
     public function search(Request $request, Response $response, $args)
     {
         $iPerPage = 25;
