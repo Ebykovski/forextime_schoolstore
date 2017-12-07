@@ -42,48 +42,7 @@ final class GoodsController extends AbstractController
 
         foreach ($aGoods as $item) {
 
-            $aOptions = [];
-
-            foreach ($item->getOptions() as $option) {
-
-                switch ($item->getCategoryId()) {
-                    // 1 - Books
-                    case 1:
-                        // name, authors, isbn
-                        if (in_array($option->getId(), [1, 2, 4])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    // 2 - Pens
-                    case 2:
-                        // manufacturer, color
-                        if (in_array($option->getId(), [5, 7])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    // 3 - Notebooks
-                    case 3:
-                        // manufacturer, cover
-                        if (in_array($option->getId(), [5, 8])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            $aOptions = $this->filterOptionsForListByCategoryId($item->getOptions(), $item->getCategoryId());
 
             $aData[] = [
                 'id' => $item->getId(),
@@ -158,11 +117,11 @@ final class GoodsController extends AbstractController
 
         $error = false;
 
-        try{
+        try {
             $oGoodsMapper = new GoodsMapper($this->db);
             $item = $oGoodsMapper->fetchById((int) $args['id']);
 
-            if(!$item){
+            if (!$item) {
                 throw new \Exception('Goods not found');
             }
 
@@ -171,7 +130,7 @@ final class GoodsController extends AbstractController
 
             $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
 
-            if(!$oCategory){
+            if (!$oCategory) {
                 throw new Exception('Category not found');
             }
 
@@ -187,8 +146,7 @@ final class GoodsController extends AbstractController
             $item->setOptions($aCategoryOptions);
 
             $oGoodsMapper->save($item);
-
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $error = $e->getMessage();
         }
 
@@ -211,13 +169,13 @@ final class GoodsController extends AbstractController
     {
         $error = false;
 
-        try{
+        try {
             $aOptionValues = $request->getParam('option');
             $iCategoryId = $request->getParam('category_id');
 
             $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
 
-            if(!$oCategory){
+            if (!$oCategory) {
                 throw new Exception('Category not found');
             }
 
@@ -235,8 +193,7 @@ final class GoodsController extends AbstractController
             $item->setOptions($aCategoryOptions);
 
             (new GoodsMapper($this->db))->save($item);
-
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $error = $e->getMessage();
         }
 
@@ -291,48 +248,7 @@ final class GoodsController extends AbstractController
 
         foreach ($aGoods as $item) {
 
-            $aOptions = [];
-
-            foreach ($item->getOptions() as $option) {
-
-                switch ($item->getCategoryId()) {
-                    // 1 - Books
-                    case 1:
-                        // name, authors, isbn
-                        if (in_array($option->getId(), [1, 2, 4])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    // 2 - Pens
-                    case 2:
-                        // manufacturer, color
-                        if (in_array($option->getId(), [5, 7])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    // 3 - Notebooks
-                    case 3:
-                        // manufacturer, cover
-                        if (in_array($option->getId(), [5, 8])) {
-                            $aOptions[] = [
-                                'id' => $option->getId(),
-                                'name' => $option->getName(),
-                                'value' => $option->getValue()
-                            ];
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            $aOptions = $this->filterOptionsForListByCategoryId($item->getOptions(), $item->getCategoryId());
 
             $aData[] = [
                 'id' => $item->getId(),
@@ -350,6 +266,60 @@ final class GoodsController extends AbstractController
                     'per_page' => $iPerPage,
                     'total' => $oGoodsMapper->foundRows()
                         ], 200);
+    }
+
+    /**
+     *
+     * @param array \App\Model\Option
+     * @param integer $category_id
+     * @return array
+     */
+    private function filterOptionsForListByCategoryId($options_list, $category_id)
+    {
+        $aOptions = [];
+
+        foreach ($options_list as $option) {
+
+            switch ($category_id) {
+                // 1 - Books
+                case 1:
+                    // name, authors, isbn
+                    if (in_array($option->getId(), [1, 2, 4])) {
+                        $aOptions[] = [
+                            'id' => $option->getId(),
+                            'name' => $option->getName(),
+                            'value' => $option->getValue()
+                        ];
+                    }
+                    break;
+                // 2 - Pens
+                case 2:
+                    // manufacturer, color
+                    if (in_array($option->getId(), [5, 7])) {
+                        $aOptions[] = [
+                            'id' => $option->getId(),
+                            'name' => $option->getName(),
+                            'value' => $option->getValue()
+                        ];
+                    }
+                    break;
+                // 3 - Notebooks
+                case 3:
+                    // manufacturer, cover
+                    if (in_array($option->getId(), [5, 8])) {
+                        $aOptions[] = [
+                            'id' => $option->getId(),
+                            'name' => $option->getName(),
+                            'value' => $option->getValue()
+                        ];
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $aOptions;
     }
 
 }
