@@ -30,7 +30,7 @@ GET /api/v1/goods - list goods
 
 GET /api/v1/goods/page/1 - get 1 page goods
 
-GET /api/v1/goods/1 - get detail of goods buy id
+GET /api/v1/goods/1 - get detail of goods by id
 
 
 POST /api/v1/goods - create new goods
