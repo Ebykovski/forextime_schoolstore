@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-final class OptionMapper extends BaseMapper
+final class OptionMapper extends AbstractMapper
 {
 
     /**

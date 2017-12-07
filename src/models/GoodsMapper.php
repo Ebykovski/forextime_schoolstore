@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-final class GoodsMapper extends BaseMapper
+final class GoodsMapper extends AbstractMapper
 {
 
     /**

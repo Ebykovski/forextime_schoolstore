@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-final class Option extends BaseModel
+final class Option extends AbstractModel
 {
     /**
      * @var integer

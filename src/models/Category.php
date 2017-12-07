@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-final class Category extends BaseModel
+final class Category extends AbstractModel
 {
 
     /**

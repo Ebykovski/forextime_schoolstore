@@ -4,13 +4,14 @@ namespace App\Controller\Api;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use App\Controller\AbstractController;
 
 /**
  * Description of IndexController
  *
  * @author ebykovski
  */
-final class IndexController extends \App\Controller\BaseController
+final class IndexController extends AbstractController
 {
     public function index(Request $request, Response $response, $args)
     {

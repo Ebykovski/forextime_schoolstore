@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use App\Controller\AbstractController;
 use App\Model\CategoryMapper;
 use App\Model\OptionMapper;
 
@@ -12,7 +13,7 @@ use App\Model\OptionMapper;
  *
  * @author ebykovski
  */
-final class CategoriesController extends \App\Controller\BaseController
+final class CategoriesController extends AbstractController
 {
 
     public function listItems(Request $request, Response $response, $args)

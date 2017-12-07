@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-final class Goods extends BaseModel
+final class Goods extends AbstractModel
 {
 
     /**

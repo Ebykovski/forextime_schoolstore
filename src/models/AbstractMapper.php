@@ -3,11 +3,11 @@
 namespace App\Model;
 
 /**
- * BaseMapper
+ * AbstractMapper
  *
  * @author ebykovski
  */
-abstract class BaseMapper
+abstract class AbstractMapper
 {
 
     /**

@@ -3,11 +3,11 @@
 namespace App\Model;
 
 /**
- * BaseModel
+ * AbstractModel
  *
  * @author ebykovski
  */
-abstract class BaseModel
+abstract class AbstractModel
 {
 
     /**

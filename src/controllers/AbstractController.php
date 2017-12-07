@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Slim\Container;
 
-abstract class BaseController
+abstract class AbstractController
 {
 
     protected $renderer;
