@@ -19,7 +19,7 @@ final class CategoriesController extends \App\Controller\BaseController
     {
         $aItems = (new CategoryMapper($this->db))->fetchAll();
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $aItems
                         ], 200);
     }
@@ -28,7 +28,7 @@ final class CategoriesController extends \App\Controller\BaseController
     {
         $aCategory = (new CategoryMapper($this->db))->fetchById((int) $args['id']);
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $aCategory
                         ], ($aCategory ? 200 : 404)
         );
@@ -52,7 +52,7 @@ final class CategoriesController extends \App\Controller\BaseController
             }
         }
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $aData
                         ], 200
         );

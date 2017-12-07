@@ -5,12 +5,12 @@ $container = $app->getContainer();
 
 // view renderer
 $container['renderer'] = function ($c) {
-    if ($c->get('request')->isXhr()) {
-        return new \Slim\Views\JsonView();
-    } else {
         $settings = $c->get('settings')['renderer'];
         return new Slim\Views\PhpRenderer($settings['template_path']);
-    }
+};
+
+$container['jsonrenderer'] = function ($c) {
+        return new \Slim\Views\JsonView();
 };
 
 // monolog

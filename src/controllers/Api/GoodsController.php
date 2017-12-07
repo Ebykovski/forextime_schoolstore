@@ -27,8 +27,65 @@ final class GoodsController extends \App\Controller\BaseController
                 ->setPage($iPage)
                 ->fetchAll();
 
-        return $this->renderer->render($response, [
-                    'data' => $aGoods,
+        $aData = [];
+
+        foreach ($aGoods as $item) {
+
+            $aOptions = [];
+
+            foreach ($item->getOptions() as $option) {
+
+                switch ($item->getCategoryId()) {
+                    // 1 - Books
+                    case 1:
+                        // name, authors, isbn
+                        if (in_array($option->getId(), [1, 2, 4])) {
+                            $aOptions[] = [
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    // 2 - Pens
+                    case 2:
+                        // manufacturer, color
+                        if (in_array($option->getId(), [5, 7])) {
+                            $aOptions[] = [
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    // 3 - Notebooks
+                    case 3:
+                        // manufacturer, cover
+                        if (in_array($option->getId(), [5, 8])) {
+                            $aOptions[] = [
+                                'id' => $option->getId(),
+                                'name' => $option->getName(),
+                                'value' => $option->getValue()
+                            ];
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            $aData[] = [
+                'id' => $item->getId(),
+                'category' => [
+                    'id' => $item->getCategory()->getId(),
+                    'name' => $item->getCategory()->getName()
+                ],
+                'options' => $aOptions
+            ];
+        }
+
+        return $this->jsonRenderer->render($response, [
+                    'data' => $aData,
                     'page' => $iPage,
                     'per_page' => $iPerPage,
                     'total' => $oGoodsMapper->foundRows()
@@ -63,7 +120,7 @@ final class GoodsController extends \App\Controller\BaseController
             ];
         }
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $aData
                         ], ($aData ? 200 : 404)
         );
@@ -79,7 +136,7 @@ final class GoodsController extends \App\Controller\BaseController
 
         //(new GoodsMapper($this->db))->save($item);
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $item
                         ], 200
         );
@@ -90,7 +147,7 @@ final class GoodsController extends \App\Controller\BaseController
         $item = new Goods($this->db);
         (new GoodsMapper($this->db))->save($item);
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => 1
                         ], 500
         );
@@ -168,7 +225,7 @@ final class GoodsController extends \App\Controller\BaseController
             ];
         }
 
-        return $this->renderer->render($response, [
+        return $this->jsonRenderer->render($response, [
                     'data' => $aData,
                     'page' => $iPage,
                     'per_page' => $iPerPage,

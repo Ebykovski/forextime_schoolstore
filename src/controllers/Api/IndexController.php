@@ -21,7 +21,7 @@ final class IndexController extends \App\Controller\BaseController
 
         $_SESSION['authToken'] = $token;
 
-        $this->renderer->render($response, [
+        $this->jsonRenderer->render($response, [
                 'token' => $token,
                 'expired' => 'session'
         ], 200);
