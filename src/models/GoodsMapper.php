@@ -33,6 +33,11 @@ final class GoodsMapper extends AbstractMapper
      */
     public function search($sQueryString, $iCategoryId = false)
     {
+        // save search history as tags
+        $tag = new Tag($this->db);
+        $tag->setName($sQueryString);
+
+        (new TagsMapper($this->db))->save($tag);
 
         $sQuery = 'SELECT
                     g.*

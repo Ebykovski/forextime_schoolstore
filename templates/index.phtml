@@ -13,38 +13,47 @@
         <div>school store</div>
 
         <div class="wrapper">
-            <form id="searchForm">
-                <input type="text" id="query" name="q" placeholder="search query">
-                <select name="category" class="category">
-                    <option value="">In all Categories</option>
+            <div class="header">
+                <form id="searchForm">
+                    <input type="text" id="query" name="q" placeholder="search query" required>
+                    <select name="category" class="category">
+                        <option value="">In all Categories</option>
 
-                    <?php foreach ($categories as $item) : ?>
-                        <option value="<?= $item->getId() ?>"><?= $item->getName() ?></option>
-                    <?php endforeach; ?>
-
-                </select>
-                <button type="submit">Search</button>
-            </form>
-
-            <div id="editFormWrap" style="display: none">
-                <form id="editForm">
-                    <input type="hidden" name="id">
-                    <h2>Edit goods</h2>
-                    <label>Select category</label>
-                    <select name="category_id" class="category">
                         <?php foreach ($categories as $item) : ?>
                             <option value="<?= $item->getId() ?>"><?= $item->getName() ?></option>
                         <?php endforeach; ?>
+
                     </select>
-                    <div id="optionsList">
-                    </div>
-                    <button type="submit">Save</button>
-                    <button type="button" class="cancel">Cancel</button>
+                    <button type="submit">Search</button>
                 </form>
+
+                <div id="editFormWrap" style="display: none">
+                    <form id="editForm">
+                        <input type="hidden" name="id">
+                        <h2>Edit goods</h2>
+                        <label>Select category</label>
+                        <select name="category_id" class="category">
+                            <?php foreach ($categories as $item) : ?>
+                                <option value="<?= $item->getId() ?>"><?= $item->getName() ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div id="optionsList">
+                        </div>
+                        <button type="submit">Save</button>
+                        <button type="button" class="cancel">Cancel</button>
+                    </form>
+                </div>
             </div>
+            <div class="sidebar">
 
-            <div id="listItems"></div>
+                <button type="button" id="addGoods">Create Goods</button>
 
+                <h4>Categories</h4>
+                <div id="categories"></div>
+                <h4>Tags</h4>
+                <div id="tags"></div>
+            </div>
+            <div class="content" id="listItems"></div>
         </div>
 
     </body>

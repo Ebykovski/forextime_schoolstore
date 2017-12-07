@@ -22,6 +22,22 @@ h1 {
     margin: 0 auto;
 }
 
+.wrapper > div {
+    float: left;
+}
+
+.header {
+    width: 100%;
+}
+
+.content {
+    width: 80%;
+}
+
+.sidebar {
+    width: 20%;
+}
+
 #searchForm {
     margin: 30px 0;
 }
@@ -55,4 +71,8 @@ h1 {
 #editFormWrap label {
     display: block;
     margin-top: 10px;
+}
+
+.sidebar li {
+    text-align: left;
 }

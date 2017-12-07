@@ -24,6 +24,80 @@
                 }
         );
 
+        // get and fill categories list
+        $.getJSON(
+                apiUrl + '/categories',
+                function (response, statusText, jqXHR) {
+                    if (jqXHR.status == 200) {
+
+                        var ul = $("<ul>");
+
+                        response.data.forEach(function (item) {
+                            ul.append($("<li>").append($("<a>", {
+                                'data-id': item.id,
+                                'href': '/goods/category/' + item.id
+                            }).text(item.name)));
+                        });
+
+                        $('#categories').append(ul);
+                    }
+                });
+
+
+        /**
+         * get and fill Tags list
+         */
+        function fillTags() {
+            $.getJSON(
+                    apiUrl + '/tags',
+                    $(this).serialize(),
+                    function (response, statusText, jqXHR) {
+                        if (jqXHR.status == 200) {
+
+                            var ul = $("<ul>");
+
+                            response.data.forEach(function (item) {
+                                ul.append($("<li>").append($("<a>", {
+                                    'data-name': item.name,
+                                    'href': '/goods/tag/' + encodeURIComponent(item.name)
+                                }).text(item.name + ' (' + item.weight + ')')));
+                            });
+
+                            $('#tags').empty().append(ul);
+                        }
+                    });
+        }
+
+        fillTags();
+
+        $(document).on('click', '#tags a', function () {
+
+            $('#query').val($(this).data('name'));
+            $('#searchForm').submit();
+            
+            return false;
+        });
+
+        $(document).on('click', '#categories a', function () {
+
+            alert('Not implemented');
+            
+            return false;
+        });
+
+        // get and fill goods list
+        $.getJSON(
+                apiUrl + '/goods',
+                function (response, statusText, jqXHR) {
+                    if (jqXHR.status == 200) {
+                        if (response.total > 0) {
+                            fillTable(response.data);
+                        } else {
+                            $('#listItems').empty().text('0 items found');
+                        }
+                    }
+                });
+
         // on submit search form
         $(document).on('submit', '#searchForm', function () {
 
@@ -33,34 +107,16 @@
                     apiUrl + '/goods/search',
                     $(this).serialize(),
                     function (response, statusText, jqXHR) {
-                        $('#listItems').empty();
-
                         if (jqXHR.status == 200) {
-
-                            var data = response.data;
-
-                            $('#listItems').text(data.length + ' items found');
-
-                            var i = 0;
-                            data.forEach(function (item) {
-                                console.log(item);
-                                var row = $("<div>", {
-                                    "class": "item " + (++i % 2 == 0 ? "odd" : "even"),
-                                    "data-id": item.id
-                                })
-                                        .append($('<h3>').text('#' + item.id + ' ' + item.category.name));
-
-                                for (var j in item.options) {
-                                    row.append(
-                                            $("<div>")
-                                            .append($('<b>').text(item.options[j].name + ':'))
-                                            .append(item.options[j].value + '<br />')
-                                            );
-                                }
-
-                                $('#listItems').append(row);
-                            });
+                            if (response.total > 0) {
+                                fillTable(response.data);
+                            } else {
+                                $('#listItems').empty().text('0 items found');
+                            }
                         }
+
+                        // update Tags list
+                        fillTags();
                     });
 
             return false;
@@ -103,12 +159,22 @@
                     });
         });
 
+        // create new goods button click
+        $('#addGoods').on('click', function () {
+            $('#editForm h2').text('Create goods');
+            $('#editForm input[name=id]').val('');
+            $('#editForm .category').val('');
+            $('#optionsList').empty();
+
+            $('#editFormWrap').slideDown();
+        });
+
         // close edit form
         $('#editForm .cancel').on('click', function () {
             $('#editFormWrap').slideUp();
         });
 
-        // by change category of goods request options from server 
+        // by change category request options for category
         $('#editForm .category').on('change', function () {
             var category_id = $(this).val();
 
@@ -145,8 +211,6 @@
 
             var goods_id = $('#editForm input[name=id]').val();
 
-            var url = goods_id > 0 ? '/goods/' + goods_id : '/goods'
-
             $.ajax({
                 method: "POST",
                 url: apiUrl + '/goods' + (goods_id > 0 ? '/' + goods_id : ''),
@@ -167,6 +231,50 @@
 
             return false;
         });
+
+        /**
+         * Fill goods table from response array
+         * 
+         * @param {array} data
+         */
+        function fillTable(data) {
+
+            $('#listItems').empty();
+
+            var i = 0;
+            data.forEach(function (item) {
+
+                $('#listItems').append(buildRow(item, {
+                    "class": "item " + (++i % 2 == 0 ? "odd" : "even"),
+                    "data-id": item.id
+                }));
+            });
+        }
+
+        /**
+         * Build goods row
+         * 
+         * @param {object} item
+         * @param {object} attr
+         * @returns {jQuery}
+         */
+        function buildRow(item, attr) {
+
+            attr = attr || {};
+
+            var row = $("<div>", attr)
+                    .append($('<h3>').text('#' + item.id + ' ' + item.category.name));
+
+            for (var j in item.options) {
+                row.append(
+                        $("<div>")
+                        .append($('<b>').text(item.options[j].name + ':'))
+                        .append(item.options[j].value + '<br />')
+                        );
+            }
+
+            return row;
+        }
     });
 })();
 

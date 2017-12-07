@@ -20,8 +20,17 @@ final class CategoriesController extends AbstractController
     {
         $aItems = (new CategoryMapper($this->db))->fetchAll();
 
+        $aData = [];
+
+        foreach ($aItems as $item) {
+            $aData[] = [
+                'id' => $item->getId(),
+                'name' => $item->getName()
+            ];
+        }
+
         return $this->jsonRenderer->render($response, [
-                    'data' => $aItems
+                    'data' => $aData
                         ], 200);
     }
 

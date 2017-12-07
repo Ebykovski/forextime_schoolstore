@@ -9,7 +9,6 @@ namespace App\Model;
  */
 abstract class AbstractMapper
 {
-
     /**
      * @var \PDO
      */
@@ -28,6 +27,13 @@ abstract class AbstractMapper
      * @var integer
      */
     protected $page = 0;
+
+    /**
+     * Name of model
+     *
+     * @var string
+     */
+    protected $modelName = 'stdClass';
 
     /**
      *
@@ -91,10 +97,10 @@ abstract class AbstractMapper
      */
     public function fetchAll()
     {
-        $sQuery = 'SELECT SQL_CALC_FOUND_ROWS * FROM ' . $this->tableName;
+        $sQuery = 'SELECT SQL_CALC_FOUND_ROWS * FROM '.$this->tableName;
 
         if ($this->getPage() > 0) {
-            $sQuery .= ' LIMIT ' . $this->getLimit() . ' OFFSET ' . (($this->getPage() - 1) * $this->getLimit());
+            $sQuery .= ' LIMIT '.$this->getLimit().' OFFSET '.(($this->getPage() - 1) * $this->getLimit());
         }
 
         $stmt = $this->db->prepare($sQuery);
@@ -111,7 +117,7 @@ abstract class AbstractMapper
      */
     public function fetchById($id)
     {
-        $sQuery = 'SELECT * FROM ' . $this->tableName . ' WHERE id = :id';
+        $sQuery = 'SELECT * FROM '.$this->tableName.' WHERE id = :id';
 
         $stmt = $this->db->prepare($sQuery);
 

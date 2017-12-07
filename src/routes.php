@@ -21,4 +21,9 @@ $app->group('/api/v1', function () use ($app) {
         $app->get('/{id:\d+}', 'App\Controller\Api\CategoriesController:getItem');
         $app->get('/{id:\d+}/options', 'App\Controller\Api\CategoriesController:getOptions');
     });
+
+    $app->group('/tags', function () use ($app) {
+        $app->get('[/]', 'App\Controller\Api\TagsController:listItems');
+    });
+
 });
