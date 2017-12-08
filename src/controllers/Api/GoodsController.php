@@ -125,7 +125,7 @@ final class GoodsController extends AbstractController
                 throw new \Exception('Goods not found');
             }
 
-            $aOptionValues = $request->getParam('option');
+            $aOptionValues = $request->getParam('option', []);
             $iCategoryId = $request->getParam('category_id');
 
             $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
@@ -170,7 +170,7 @@ final class GoodsController extends AbstractController
         $error = false;
 
         try {
-            $aOptionValues = $request->getParam('option');
+            $aOptionValues = $request->getParam('option', []);
             $iCategoryId = $request->getParam('category_id');
 
             $oCategory = (new CategoryMapper($this->db))->fetchById($iCategoryId);
