@@ -103,7 +103,8 @@ final class GoodsMapper extends AbstractMapper
      * Insert new goods
      *
      * @param \App\Model\Goods $goods
-     * @return Goods
+     * @return $this
+     * @throws \Exception
      */
     private function insert(Goods $goods)
     {
@@ -188,6 +189,7 @@ final class GoodsMapper extends AbstractMapper
      *
      * @param \App\Model\Goods $goods
      * @return GoodsMapper
+     * @throws \Exception
      */
     private function update(Goods $goods)
     {
