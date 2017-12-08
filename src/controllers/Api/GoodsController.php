@@ -151,7 +151,7 @@ final class GoodsController extends AbstractController
         }
 
         return $this->jsonRenderer->render($response, [
-                    'data' => 1,
+                    'data' => [],
                     'error' => $error
                         ], ($error ? 500 : 200)
         );
@@ -198,7 +198,7 @@ final class GoodsController extends AbstractController
         }
 
         return $this->jsonRenderer->render($response, [
-                    'data' => 1,
+                    'data' => [],
                     'error' => $error
                         ], ($error ? 500 : 200)
         );
