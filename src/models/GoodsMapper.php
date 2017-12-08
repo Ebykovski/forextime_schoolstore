@@ -142,8 +142,6 @@ final class GoodsMapper extends AbstractMapper
              * Insert options for goods
              */
 
-            $aOptionIds = [];
-
             $sQuery = 'INSERT INTO
                 goods_options (
                     goods_id,
@@ -161,7 +159,6 @@ final class GoodsMapper extends AbstractMapper
             $stmt = $this->db->prepare($sQuery);
 
             foreach ($goods->getOptions() as $option) {
-                $aOptionIds[] = $option->getId();
 
                 $res = $stmt->execute([
                     'goods_id'  => $id,
