@@ -38,24 +38,24 @@ final class GoodsController extends AbstractController
                 ->setPage($iPage)
                 ->fetchAll();
 
-        $aData = [];
-
-        foreach ($aGoods as $item) {
-
-            $aOptions = $this->filterOptionsForListByCategoryId($item->getOptions(), $item->getCategoryId());
-
-            $aData[] = [
-                'id' => $item->getId(),
-                'category' => [
-                    'id' => $item->getCategory()->getId(),
-                    'name' => $item->getCategory()->getName()
-                ],
-                'options' => $aOptions
-            ];
-        }
+//        $aData = [];
+//
+//        foreach ($aGoods as $item) {
+//
+//            $aOptions = $this->filterOptionsForListByCategoryId($item->getOptions(), $item->getCategoryId());
+//
+//            $aData[] = [
+//                'id' => $item->getId(),
+//                'category' => [
+//                    'id' => $item->getCategory()->getId(),
+//                    'name' => $item->getCategory()->getName()
+//                ],
+//                'options' => $aOptions
+//            ];
+//        }
 
         return $this->jsonRenderer->render($response, [
-                    'data' => $aData,
+                    'data' => $aGoods,
                     'page' => $iPage,
                     'per_page' => $iPerPage,
                     'total' => $oGoodsMapper->foundRows()

@@ -53,17 +53,4 @@ final class Category extends AbstractModel
         return $this;
     }
 
-    /**
-     * Method for json_encode
-     *
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName()
-        ];
-    }
-
 }
