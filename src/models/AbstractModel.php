@@ -31,22 +31,23 @@ abstract class AbstractModel implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        $reflect = new \ReflectionClass($this);
-//        $props = $reflect->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED);
-        $props = $reflect->getProperties();
+        $reflection = new \ReflectionClass($this);
 
-        $outArray = [];
+        $aProperties = $reflection->getProperties(/* \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED */);
 
-        foreach ($props as $prop) {
-            $prop_name = $prop->getName();
+        $aOutArray = [];
 
-            $method_name = 'get' . $prop_name;
-            if (method_exists($this, $method_name)) {
-                $outArray[$prop_name] = $this->{$method_name}();
+        foreach ($aProperties as $property) {
+            $sPropertyName = $property->getName();
+
+            $sMethodName = 'get' . $sPropertyName;
+
+            if (method_exists($this, $sMethodName)) {
+                $outArray[$sPropertyName] = $this->{$sMethodName}();
             }
         }
 
-        return $outArray;
+        return $aOutArray;
     }
 
 }
