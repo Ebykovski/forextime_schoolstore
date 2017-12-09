@@ -119,4 +119,18 @@ final class Goods extends AbstractModel
         return $this;
     }
 
+    /**
+     * Method for json_encode
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'category' => $this->getCategory(),
+            'options' => $this->getOptions()
+        ];
+    }
+
 }

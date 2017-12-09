@@ -9,6 +9,7 @@ namespace App\Model;
  */
 final class Option extends AbstractModel
 {
+
     /**
      * @var integer
      */
@@ -78,6 +79,20 @@ final class Option extends AbstractModel
         $this->option_value = $option_value;
 
         return $this;
+    }
+
+    /**
+     * Method for json_encode
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'value' => $this->getValue()
+        ];
     }
 
 }

@@ -7,7 +7,7 @@ namespace App\Model;
  *
  * @author ebykovski
  */
-abstract class AbstractModel
+abstract class AbstractModel implements \JsonSerializable
 {
 
     /**
@@ -22,6 +22,18 @@ abstract class AbstractModel
     public function __construct(\PDO $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * Method for json_encode
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId()
+        ];
     }
 
 }
