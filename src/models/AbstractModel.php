@@ -9,7 +9,6 @@ namespace App\Model;
  */
 abstract class AbstractModel implements \JsonSerializable
 {
-
     /**
      * @var \PDO
      */
@@ -40,10 +39,10 @@ abstract class AbstractModel implements \JsonSerializable
         foreach ($aProperties as $property) {
             $sPropertyName = $property->getName();
 
-            $sMethodName = 'get' . $sPropertyName;
+            $sMethodName = 'get'.$sPropertyName;
 
             if (method_exists($this, $sMethodName)) {
-                $outArray[$sPropertyName] = $this->{$sMethodName}();
+                $aOutArray[$sPropertyName] = $this->{$sMethodName}();
             }
         }
 
